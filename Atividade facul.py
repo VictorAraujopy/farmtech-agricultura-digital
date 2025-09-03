@@ -160,27 +160,51 @@ def listar_registros(cultura_nome):  # Pessoa A
 
 
 def atualizar_registro(cultura_nome):  # Pessoa B
+    # pega o "banco" da cultura certa
     c = repo.get(cultura_nome)
+    # se não existe nenhum terreno dessa cultura ele da erro
     if len(c.talhao) == 0:
         print("⚠️ Nenhum talhão cadastrado para atualizar.")
         return
+    #pede ao user qual terreno ele quer mudar
     idx_txt = input("Índice do talhão a alterar: ")
+
+    #tenta converter oq o usuario digitou para inteiro
     try: 
         idx = int(idx_txt)
     except ValueError:
         print("⚠️ Índice inválido.")
         return
+    
+    # 5) confere se esse índice existe (ex.: 0, 1, 2... até o tamanho da lista - 1)
+    if idx < 0 or idx >= len(c.talhao):
+        print("Índice inválido.")
+        return
+    # 6) mostra os campos disponíveis para alterar (todos os atributos)
     campos =  ["talhao", "ruas", "metros_por_rua", "dose_ml_por_m"]
+
+    # inclui os campos específicos da cultura
     if cultura_nome == "cafe":
         campos += ["comprimento", "largura"]
     else:
         campos += ["raio"]
     print("Campos disponíveis para alterar: " + ", ".join(campos))
     campo = input("Qual campo alterar? ").strip().lower()
+    #se o campo digitado n existir ele da erro
+    
     if campo not in campos:
         print("⚠️ Campo inválido.")
         return
+    
+    # 7) pede o novo valor para o campo escolhido
     novo_txt = input(f"Novo valor para '{campo}': ").strip()
+
+
+    # 12) converte o novo valor para o tipo certo:
+    #     - talhao = texto
+    #     - ruas = inteiro
+    #     - os demais (metros_por_rua, dose_ml_por_m, comprimento, largura, raio) = número decimal
+
     if campo == "talhao":
         novo_val = novo_txt
     elif campo == "ruas":
@@ -189,45 +213,130 @@ def atualizar_registro(cultura_nome):  # Pessoa B
         except ValueError:
             print("⚠️ Valor inválido para 'ruas'. Deve ser um número inteiro.")
             return
+    else:  
+        try:
+            novo_val = float(novo_txt)
+        except ValueError:
+            print(f"⚠️ Valor inválido para '{campo}'. Deve ser um número.")            
+            return
+        
+    #  getattr(c, campo) pega a LISTA certa dentro do objeto (ex.: c.largura, c.raio, c.metros_por_rua)
+    #  [idx] escolhe a posição do terreno que você quer mudar
+    #  novo_val grava o novo valor nessa posição
+
+    getattr(c, campo)[idx] = novo_val
+    print("✅ Talhão atualizado com sucesso.")
+        
     # (restante ainda a implementar pela Pessoa B)
 
 
 def deletar_registro(cultura_nome):  # Pessoa B
-    """
-    PESSOA B:
-    OBJETIVO:
-    - Remover o talhão de índice 'idx' de TODAS as listas correspondentes da cultura.
-    """
-    pass
+    c = repo.get(cultura_nome)
+    if len(c.talhao) == 0:
+        print("⚠️ Nenhum talhão cadastrado para deletar.")
+        return
+    idx_txt = input("Índice do talhão a deletar: ")
+    try:
+        idx = int(idx_txt)
+    except ValueError:
+        print("⚠️ Índice inválido.")
+        return
+    if idx < 0 or idx >= len(c.talhao):
+        print("⚠️ Índice inválido.")
+        return
+
+    # Remove o talhão e todos os dados associados em todas as listas
+    c.talhao.pop(idx)
+    c.ruas.pop(idx)
+    c.metros_por_rua.pop(idx)
+    c.dose_ml_por_m.pop(idx)
+    if cultura_nome == "cafe":
+        c.comprimento.pop(idx)
+        c.largura.pop(idx)
+    else:
+        c.raio.pop(idx)
+    print("✅ Talhão deletado com sucesso.")
 
 
 def exportar_csv():  # Pessoa B
-    """
-    PESSOA B:
-    OBJETIVO:
-    - Gerar um arquivo CSV 'data/dados.csv' consolidando registros de CAFÉ e SOJA.
-    """
-    pass
+    # caminho do arquivo CSV onde vamos salvar os dados
+    caminho = "data/dados.csv" 
+
+    rows = []  # lista de linhas que será gravada no CSV
+
+    # percorre todos os terrenos de café
+    c = repo.cafe
+    for i in range(len(c.talhao)):
+        area = c.calcular_area(i)          # calcula área daquele terreno
+        litros = c.calcular_litros(i)      # calcula litros necessários
+        # monta a linha com todos os dados e adiciona na lista 'rows'
+        rows.append([
+            "cafe", c.talhao[i], area,
+            c.ruas[i], c.metros_por_rua[i], c.dose_ml_por_m[i],
+            litros,
+        ])
+
+    # percorre todos os terrenos de soja
+    s = repo.soja
+    for i in range(len(s.talhao)):
+        area = s.calcular_area(i)
+        litros = s.calcular_litros(i)
+        rows.append([
+            "soja", s.talhao[i], area,
+            s.ruas[i], s.metros_por_rua[i], s.dose_ml_por_m[i],
+            litros,
+        ])
+
+    # abre o arquivo CSV no modo de escrita ("w") e garante codificação UTF-8
+    with open(caminho, "w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)  # cria um "escritor" de CSV
+        # escreve o cabeçalho (primeira linha do CSV)
+        writer.writerow(["cultura","talhao","area_m2","ruas","metros_por_rua","dose_ml_por_m","litros"])
+        # escreve todas as linhas guardadas em 'rows'
+        writer.writerows(rows)
+
+    # confirma para o usuário
+    print(f"✔ Exportado para {caminho}")
 
 
 def loop():  # Pessoa B
-    """
-    PESSOA B:
-    OBJETIVO:
-    - Controlar o ciclo do programa (loop de menu) até o usuário escolher sair.
-    """
-    pass
+     # loop principal que mantém o programa rodando até o usuário sair
+    while True:
+        op = menu()  # mostra menu e espera escolha (string)
+
+        if op == "1":
+            cultura = escolher_cultura()   # escolhe café ou soja
+            inserir_registro(cultura)      # insere novo terreno
+
+        elif op == "2":
+            cultura = escolher_cultura()
+            listar_registros(cultura)      # lista todos os terrenos
+
+        elif op == "3":
+            cultura = escolher_cultura()
+            atualizar_registro(cultura)    # atualiza dados de um terreno
+
+        elif op == "4":
+            cultura = escolher_cultura()
+            deletar_registro(cultura)      # deleta um terreno
+
+        elif op == "5":
+            exportar_csv()                 # exporta todos para CSV
+
+        elif op == "0":
+            print("Até mais!")             # mensagem de saída
+            break                          # sai do loop e termina o programa
+
+        else:
+            print("⚠️ Opção inválida.")     # caso o usuário digite errado
 
 
 # ==============================
 # MAIN
 # ==============================
 if __name__ == "__main__":  # Pessoa B
-    """
-    PESSOA B:
-    OBJETIVO:
-    - Ponto de entrada do programa.
-    """
-    pass
+    # ponto de entrada do programa
+    # se o arquivo for executado diretamente, começa o loop
+    loop()
 
 
