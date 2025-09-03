@@ -1,3 +1,5 @@
+#Por padrão vou usar tudo em Metros 
+
 import csv
 
 class Cultura:  # Pessoa A: definir atributos comuns; Pessoa B: métodos de cálculo depois
@@ -8,19 +10,7 @@ class Cultura:  # Pessoa A: definir atributos comuns; Pessoa B: métodos de cál
        self.metros_por_rua = []     # era: self.Mpr
        self.dose_ml_por_m = []      # era: self.mlpM
        # removidos: self.cult, self.area (não são necessárias pelo enunciado)
-    #criei listas kk
-
-    """
-        PESSOA A:ma
-        - Guardar o nome da cultura (ex.: "cafe" ou "soja") em um atributo (ex.: self.nome = nome).
-        - Criar as LISTAS (vetores) COMUNS para armazenar dados de cada talhão (mesmo índice = mesmo talhão):
-            self.talhao           -> list[str]  (ex.: "T1", "T2"...)
-            self.ruas             -> list[int]  (quantidade de linhas/ruas no talhão)
-            self.metros_por_rua   -> list[float] (comprimento de cada rua em metros)
-            self.dose_ml_por_m    -> list[float] (dose em mL por metro a ser pulverizada/aplicada)
-        - NÃO chamar menu aqui (retire/ignore a linha self.menu_principal()):
-            * O fluxo de menu (loop) deve estar fora (ex.: função loop()).
-        """
+    #listas criadas para armazenar 
 
     # Pessoa B: implementar depois
     def calcular_area(self, i):       
@@ -41,15 +31,6 @@ class Cafe(Cultura):  # Pessoa A: definir atributos específicos (comprimento, l
     #criei a lista para armazenar o comprimento e fds tlgd da pra ver ai  
     #lembrar de colocar pra ficar em apenas metro
 
-    """
-        PESSOA A:
-        OBJETIVO:
-        - Inicializar a cultura 'cafe' chamando super().__init__("cafe").
-        - Criar LISTAS ESPECÍFICAS do café:
-            self.comprimento -> list[float]  (m)
-            self.largura     -> list[float]  (m)
-        - Essas listas devem ter o MESMO TAMANHO das listas comuns (mesmo índice = mesmo talhão).
-        """
 
     # Pessoa B: implementar depois (área retângulo)
     def calcular_area(self, i):
@@ -61,7 +42,8 @@ class Cafe(Cultura):  # Pessoa A: definir atributos específicos (comprimento, l
 class Soja(Cultura):  # Pessoa A: definir atributos específicos (raio)
     def __init__(self):
       super().__init__("soja")
-      self.raio = []
+      self.raio = [] #por padrão ele ta em Metros
+        
         #super server para transferir dados de uma classe para a outra
         #mema fita de antes
         #lembrar de colocar pra ficar em apenas metro
@@ -85,66 +67,96 @@ class Repo:  # Pessoa A: estruturar referências; Pessoa B: ajustar se necessár
        self.soja = Soja()
        self.cafe = Cafe()
        #mais lista 
-       #pra puxar a instance <- ta em ingles aff
-
+       #pra puxar a instancia 
     def get(self, cultura_nome):  # Pessoa A
        if cultura_nome == "cafe":
            return self.cafe
        else:
            return self.soja
-       #retornar a intancia de cultura a partir do nome 
-       #https://chatgpt.com/share/68b741a8-462c-8011-b432-49ba5e3f4701
+       #retornar a instancia de cultura a partir do nome 
+
+repo = Repo()
 
 
 # ==============================
 # FUNÇÕES DO APP (MENU + CRUD + EXPORT + LOOP)
 # ==============================
 
-def menu_principal():  # Pessoa A
+def menu(self):  
     while True:
-        print(" 1 Inserir\n" \
-        "2) Listar\n" \
-        "3) Atualizar\n" \
-        "4) Deletar\n" \
-        "5) Exportar CSV\n" \
-        "0) Sair")
-        opcao = input("")
-        if opcao in ["0", "1","2","3","4","5"]:
+        print("\n===== MENU =====")
+        print("1) Inserir")
+        print("2) Listar")
+        print("3) Atualizar")
+        print("4) Deletar")
+        print("5) Exportar CSV")
+        print("0) Sair")
+        opcao = input("Escolha uma opção: ")
+        if opcao in ["0", "1", "2", "3", "4", "5"]:
             return opcao
         else: 
-         print("⚠️ Opção inválida, tente novamente.")
-
-
-def escolher_cultura():  # Pessoa A
-    input("Qual cultura você quer operar? \n" \
-    "(1 - café) ou (2 - soja) \n" \
-    "")
-    """
-    PESSOA A:
-    OBJETIVO:
-    - Perguntar ao usuário qual cultura deseja operar.
-    - Retornar "cafe" ou "soja".
-    """
-    pass
+            print("⚠️ Opção inválida, tente novamente.")
+        #sistema de menu simples, caso a escolha esteja fora do planejado ira dar erro
+    
+def escolher_cultura(self):  
+    while True:
+        escolha = input("Qual cultura você quer operar? (cafe/soja): ").strip().lower()
+        if escolha in ["cafe", "soja"]:
+            return escolha
+        else:
+            print("⚠️ Digite apenas 'cafe' ou 'soja'.")
+        #sistema para escolha simples
+        #strip - serve para tirar os espaços do input para n causar problemas 
+        #lower - server para deixar para deixar o input todo em minusculo 
 
 
 def inserir_registro(cultura_nome):  # Pessoa A
-    """
-    PESSOA A:
-    OBJETIVO:
-    - Receber do usuário os dados do talhão e adicioná-los nas LISTAS da cultura escolhida.
-    """
-    pass
+    c = repo.get(cultura_nome) #pega a instância como "café" ou "soja"
+    
+    #dados sobre a plantação 
+    talhao = input("ID/Nome do talhão: ")
+    ruas = int(input("Número de ruas: "))
+    metros = float(input("Comprimento de cada rua (m): "))
+    dose = float(input("Dose em mL por metro: "))
+
+    c.talhao.append(talhao)
+    c.ruas.append(ruas)
+    c.metros_por_rua.append(metros)
+    c.dose_ml_por_m.append(dose)
+
+    #pega os dados da plantação e salve nas respectivas listas
+
+    #///////////////////////////////
+
+    #Dados mais espeficicos 
+    
+    if cultura_nome == "cafe":
+        comprimento = float(input("Comprimento do talhão (m): "))
+        largura = float(input("Largura do talhão (m): "))
+        c.comprimento.append(comprimento)
+        c.largura.append(largura)
+    else:
+        raio = float(input("Raio do talhão (m): "))
+        c.raio.append(raio)
+    print("✅ Talhão cadastrado com sucesso!")
+
+    #pega as medidas e salve nas respectivas listas
+
 
 
 def listar_registros(cultura_nome):  # Pessoa A
-    """
-    PESSOA A:
-    OBJETIVO:
-    - Percorrer os índices dos vetores da cultura escolhida e imprimir:
-        [i] talhao=...  area_m2=...  litros=...
-    """
-    pass
+    c = repo.get(cultura_nome)#para acessar os dados da cultura certa.
+
+    if len(c.talhao) == 0: # verifica se a lsita "talhao" esta vazia e printa um erro se estiver 
+        print(f"⚠️ Nenhum talhão cadastrado em {cultura_nome}.")
+        return
+    # percorre todos os talhões pelo índice
+    print(f"\n=== Lista de talhãos ({cultura_nome}) ===")
+    for i in range(len(c.talhao)):
+        area = c.calcular_area(i)  # calcula a área do talhão no índice i
+        litros = c.calcular_litros(i)  # calcula os litros necessários para o talhão i
+         # mostra tudo numa linha: índice, nome do talhão, área e litros
+        print(f"[{i}] Talhão={c.talhao[i]}, Área={area:.2f} m², Litros={litros:.2f} L")
 
 
 def atualizar_registro(cultura_nome):  # Pessoa B
@@ -217,3 +229,5 @@ if __name__ == "__main__":  # Pessoa B
     - Ponto de entrada do programa.
     """
     pass
+
+
