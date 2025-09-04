@@ -331,3 +331,4 @@ if __name__ == "__main__":  # Pessoa B
     # Ponto de entrada: se o arquivo for executado diretamente (e não importado), inicia o app.
     loop()
     # O loop() só termina quando o usuário escolhe "0" no menu.
+
