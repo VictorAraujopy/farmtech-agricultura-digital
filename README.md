@@ -162,9 +162,9 @@ class Cultura:
 Estrutura do arquivo `dados.csv`:
 
 | cultura | talhao | area_m2 | ruas | metros_por_rua | dose_ml_por_m | litros |
-|---------|--------|---------|------|---------------|---------------|--------|
-| cafe    | T001   | 5000.0  | 20   | 100.0         | 500.0         | 1000.0 |
-| soja    | T002   | 7853.98 | 15   | 120.0         | 300.0         | 540.0  |
+| ------- | ------ | ------- | ---- | -------------- | ------------- | ------ |
+| cafe    | T001   | 5000.0  | 20   | 100.0          | 500.0         | 1000.0 |
+| soja    | T002   | 7853.98 | 15   | 120.0          | 300.0         | 540.0  |
 
 ## 🔄 Controle de Fluxo
 
@@ -237,6 +237,102 @@ Raio: 75m
   area_m2_media area_m2_desvio ruas_media ruas_desvio litros_media litros_desvio
 1      22500.5       3535.534       20.5    3.535534        650.5      141.4214
 ```
+
+---
+
+# FarmTech Solutions - Monitor Meteorológico
+
+Sistema de monitoramento meteorológico para agricultura digital, desenvolvido em R com integração à API do OpenWeatherMap.
+
+## 🚀 Configuração
+
+### 1. Pré-requisitos
+- R instalado (versão 4.0 ou superior)
+- Bibliotecas R necessárias: `httr`, `jsonlite`, `dplyr`
+
+### 2. Instalação das bibliotecas
+```r
+install.packages(c("httr", "jsonlite", "dplyr"))
+```
+
+### 3. Configuração da API Key
+
+1. **Obtenha uma API key gratuita:**
+   - Acesse: https://openweathermap.org/api
+   - Crie uma conta gratuita
+   - Obtenha sua API key
+
+2. **Configure o arquivo .env:**
+   ```bash
+   # Copie o arquivo de exemplo
+   cp .env.example .env
+   
+   # Edite o arquivo .env e adicione sua API key
+   API_KEY=sua_api_key_aqui
+   ```
+
+## 📊 Como usar
+
+### Execução básica
+```bash
+Rscript --vanilla clima_api.R
+```
+
+### Execução com cidade específica
+```bash
+echo "Rio de Janeiro" | Rscript --vanilla clima_api.R
+echo "Salvador" | Rscript --vanilla clima_api.R
+echo "Brasilia" | Rscript --vanilla clima_api.R
+```
+
+**Dica**: Para cidades com acentos, use a grafia sem acentos (ex: "Brasilia" ao invés de "Brasília")
+
+## 🌟 Funcionalidades
+
+- **Condições meteorológicas atuais**: Temperatura, umidade, pressão, vento
+- **Previsão de 5 dias**: Tendências meteorológicas
+- **Análise agrícola**: Recomendações baseadas nas condições climáticas
+- **Interface amigável**: Saída formatada com emojis e cores
+
+## 📁 Estrutura de arquivos
+
+```
+├── clima_api.R          # Script principal
+├── .env                 # Configurações (não commitado)
+├── .env.example         # Template de configuração
+├── .gitignore           # Arquivos ignorados pelo Git
+└── README.md            # Este arquivo
+```
+
+## 🔒 Segurança
+
+- O arquivo `.env` contém informações sensíveis e **não deve ser commitado**
+- Use o arquivo `.env.example` como template
+- Mantenha sua API key privada
+
+## 🌾 Análise Agrícola
+
+O sistema fornece análises específicas para agricultura:
+
+- **Temperatura ideal**: 18-28°C para a maioria das culturas
+- **Umidade recomendada**: 60-80% para desenvolvimento ótimo
+- **Alertas**: Geada, estresse térmico, risco de doenças fúngicas
+- **Tendências**: Previsões para planejamento agrícola
+
+## 🐛 Solução de problemas
+
+### Erro: "API Key não configurada"
+- Verifique se o arquivo `.env` existe
+- Confirme se a API_KEY está definida corretamente
+
+### Erro: "Bibliotecas não encontradas"
+- Execute: `install.packages(c("httr", "jsonlite", "dplyr"))`
+
+### Erro: "Rscript não reconhecido"
+- Instale o R: https://cran.r-project.org/
+- Adicione o R ao PATH do sistema
+
+---
 
 ## 📜 Licença
 
