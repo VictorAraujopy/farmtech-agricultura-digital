@@ -1,0 +1,11 @@
+# Arquivos de configuração sensíveis
+.env
+
+# Arquivos temporários do R
+.Rhistory
+.RData
+.Ruserdata
+
+# Arquivos de configurações de IDE
+.idea
+.__pycache__
