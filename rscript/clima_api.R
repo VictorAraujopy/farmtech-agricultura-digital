@@ -12,7 +12,7 @@ suppressPackageStartupMessages({
 })
 
 # Função para carregar variáveis do arquivo .env
-carregar_env <- function(arquivo = ".env") {
+carregar_env <- function(arquivo = "../.env") {
   if (!file.exists(arquivo)) {
     cat("❌ Arquivo .env não encontrado!\n")
     cat("📋 Crie um arquivo .env com sua API_KEY:\n")

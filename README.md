@@ -28,13 +28,22 @@ A **FarmTech Solutions** desenvolveu uma aplicação Python para atender uma faz
 
 ```
 farmtech-agricultura-digital/
-├── main.py              # Ponto de entrada da aplicação
-├── models.py            # Classes de modelo (TalhaoBase, TalhaoCafe, TalhaoSoja)
-├── repo.py              # Repositório de dados e operações CRUD
-├── ui.py                # Interface de usuário e validações
-├── analise_estatistica.R # Análises estatísticas em R
-├── dados.csv            # Arquivo de exportação de dados
-└── README.md            # Documentação do projeto
+├── python/              # 🐍 Arquivos Python
+│   ├── main.py         # Ponto de entrada da aplicação
+│   ├── models.py       # Classes de modelo (TalhaoBase, TalhaoCafe, TalhaoSoja)
+│   ├── repo.py         # Repositório de dados e operações CRUD
+│   └── ui.py           # Interface de usuário e validações
+├── rscript/            # 📊 Arquivos R
+│   ├── clima_api.R     # API meteorológica
+│   └── analise_estatistica.R # Análises estatísticas
+├── run_python.py       # 🚀 Script para executar sistema Python
+├── run_clima.bat       # 🌤️ Script para executar sistema de clima
+├── run_analise.bat     # 📈 Script para executar análise estatística
+├── dados.csv           # 💾 Relatório de dados das culturas
+├── .env                # 🔐 Configurações (não commitado)
+├── .env.example        # 📋 Template de configuração
+├── .gitignore         # 🚫 Arquivos ignorados pelo Git
+└── README.md          # 📖 Documentação do projeto
 ```
 
 ### 🔧 Componentes Principais
@@ -78,9 +87,19 @@ install.packages("dplyr")
 
 ### 💻 Executando a Aplicação Python
 
+**Opção 1 - Script de conveniência (Recomendado):**
 ```bash
 # Navegar até o diretório do projeto
 cd farmtech-agricultura-digital
+
+# Executar usando o script de conveniência
+python run_python.py
+```
+
+**Opção 2 - Execução direta:**
+```bash
+# Navegar até a pasta python
+cd python
 
 # Executar a aplicação
 python main.py
@@ -88,8 +107,17 @@ python main.py
 
 ### 📊 Executando Análises Estatísticas
 
+**Opção 1 - Script de conveniência (Recomendado):**
 ```bash
-# Após gerar dados na aplicação Python
+# Executar análise estatística (Windows)
+.\run_analise.bat
+```
+
+**Opção 2 - Execução direta:**
+```bash
+# Navegar até a pasta rscript
+cd rscript
+
 # Executar script R
 Rscript analise_estatistica.R
 ```
@@ -240,7 +268,7 @@ Raio: 75m
 
 ---
 
-# FarmTech Solutions - Monitor Meteorológico
+# 🌤️ Monitor Meteorológico
 
 Sistema de monitoramento meteorológico para agricultura digital, desenvolvido em R com integração à API do OpenWeatherMap.
 
@@ -273,13 +301,24 @@ install.packages(c("httr", "jsonlite", "dplyr"))
 
 ## 📊 Como usar
 
-### Execução básica
+**Opção 1 - Script de conveniência (Recomendado):**
 ```bash
-Rscript --vanilla clima_api.R
+# Execução básica (Windows)
+.\run_clima.bat
+
+# Com cidade específica (Windows)
+.\run_clima.bat "Rio de Janeiro"
 ```
 
-### Execução com cidade específica
+**Opção 2 - Execução direta:**
 ```bash
+# Navegar até a pasta rscript
+cd rscript
+
+# Execução básica
+Rscript --vanilla clima_api.R
+
+# Com cidade específica
 echo "Rio de Janeiro" | Rscript --vanilla clima_api.R
 echo "Salvador" | Rscript --vanilla clima_api.R
 echo "Brasilia" | Rscript --vanilla clima_api.R
@@ -297,11 +336,11 @@ echo "Brasilia" | Rscript --vanilla clima_api.R
 ## 📁 Estrutura de arquivos
 
 ```
-├── clima_api.R          # Script principal
-├── .env                 # Configurações (não commitado)
-├── .env.example         # Template de configuração
-├── .gitignore           # Arquivos ignorados pelo Git
-└── README.md            # Este arquivo
+farmtech-agricultura-digital/
+├── rscript/            # 📊 Arquivos R
+│   ├── clima_api.R     # API meteorológicaestatísticas
+├── .env                # 🔐 Configurações (não commitado)
+├── .env.example        # 📋 Template de configuração
 ```
 
 ## 🔒 Segurança

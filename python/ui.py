@@ -137,7 +137,7 @@ def deletar_registro(cultura_nome: str):
 
 
 def exportar_csv():
-    caminho = "dados.csv"  # Caminho do arquivo de saída (você pode mudar se quiser).
+    caminho = "../dados.csv"  # Caminho do arquivo de saída (você pode mudar se quiser).
     rows = []  # Aqui vamos juntar todas as linhas a serem escritas no CSV.
 
     for cultura_nome, cultura in [("cafe", repo.cafe), ("soja", repo.soja)]:
