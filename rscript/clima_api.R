@@ -140,8 +140,22 @@ exibir_clima_atual <- function(dados) {
   # Condições gerais
   cat("\n\n☁️  CONDIÇÕES GERAIS:")
   if (!is.null(dados$weather) && length(dados$weather) > 0) {
-    if (is.list(dados$weather[[1]])) {
-      cat("\n   Tempo:", dados$weather[[1]]$description)
+    # Tentar diferentes formas de acessar a descrição
+    descricao <- NULL
+    tryCatch({
+      if (is.list(dados$weather) && length(dados$weather) > 0) {
+        if (is.list(dados$weather[[1]]) && "description" %in% names(dados$weather[[1]])) {
+          descricao <- dados$weather[[1]]$description
+        } else if (is.data.frame(dados$weather) && "description" %in% names(dados$weather)) {
+          descricao <- dados$weather$description[1]
+        }
+      }
+    }, error = function(e) {
+      descricao <- NULL
+    })
+    
+    if (!is.null(descricao) && !is.na(descricao) && descricao != "") {
+      cat("\n   Tempo:", descricao)
     } else {
       cat("\n   Tempo:", "Informação não disponível")
     }
@@ -185,7 +199,7 @@ exibir_clima_atual <- function(dados) {
   cat("\n   Pôr do sol:", format(por, "%H:%M"))
   
   # Chuva (se houver)
-  if (!is.null(dados$rain)) {
+  if ("rain" %in% names(dados) && !is.null(dados$rain)) {
     cat("\n\n🌧️  PRECIPITAÇÃO:")
     if (!is.null(dados$rain$`1h`) && !is.na(dados$rain$`1h`)) {
       cat("\n   Última hora:", dados$rain$`1h`, "mm")
@@ -239,12 +253,23 @@ exibir_previsao_resumida <- function(dados) {
     cat("\n\n📆", format(linha$data, "%A, %d/%m"))
     
     # Verificar estrutura do weather
-    if (!is.null(linha$weather) && length(linha$weather) > 0) {
-      if (is.list(linha$weather[[1]])) {
-        cat("\n   🌤️ ", linha$weather[[1]]$description)
-      } else {
-        cat("\n   🌤️ ", "Informação não disponível")
+    descricao_tempo <- NULL
+    tryCatch({
+      if (!is.null(linha$weather) && length(linha$weather) > 0) {
+        if (is.list(linha$weather) && length(linha$weather) > 0) {
+          if (is.list(linha$weather[[1]]) && "description" %in% names(linha$weather[[1]])) {
+            descricao_tempo <- linha$weather[[1]]$description
+          } else if (is.data.frame(linha$weather) && "description" %in% names(linha$weather)) {
+            descricao_tempo <- linha$weather$description[1]
+          }
+        }
       }
+    }, error = function(e) {
+      descricao_tempo <- NULL
+    })
+    
+    if (!is.null(descricao_tempo) && !is.na(descricao_tempo) && descricao_tempo != "") {
+      cat("\n   🌤️ ", descricao_tempo)
     } else {
       cat("\n   🌤️ ", "Informação não disponível")
     }
@@ -255,7 +280,9 @@ exibir_previsao_resumida <- function(dados) {
     if (!is.null(linha$wind$speed)) {
       cat("\n   💨 Vento:", round(linha$wind$speed * 3.6, 1), "km/h")
     }
-    if (!is.null(linha$rain) && !is.null(linha$rain$`3h`) && !is.na(linha$rain$`3h`) && linha$rain$`3h` > 0) {
+    # Verificar se há dados de chuva
+    if ("rain" %in% names(linha) && !is.null(linha$rain) && 
+        !is.null(linha$rain$`3h`) && !is.na(linha$rain$`3h`) && linha$rain$`3h` > 0) {
       cat("\n   🌧️  Chuva:", linha$rain$`3h`, "mm")
     }
   }
@@ -317,7 +344,9 @@ calcular_stats_agricolas <- function(dados_atuais, dados_previsao) {
     chuva_total <- 0
     for (i in 1:min(8, nrow(previsoes))) {
       item <- previsoes[i, ]
-      if (!is.null(item$rain) && !is.null(item$rain$`3h`) && !is.na(item$rain$`3h`)) {
+      # Verificar se a coluna rain existe e tem dados
+      if ("rain" %in% names(item) && !is.null(item$rain) && 
+          !is.null(item$rain$`3h`) && !is.na(item$rain$`3h`)) {
         chuva_total <- chuva_total + item$rain$`3h`
       }
     }
@@ -358,13 +387,13 @@ main <- function() {
   tryCatch({
     cidade <- readLines("stdin", n = 1, warn = FALSE)
     if (length(cidade) == 0 || cidade == "" || is.na(cidade)) {
-      cidade <- "São Paulo"
+      cidade <- "Sao Paulo"
     }
   }, error = function(e) {
     # Se falhar, tentar readline (modo interativo)
     cidade <- readline()
     if (cidade == "" || is.na(cidade)) {
-      cidade <- "São Paulo"
+      cidade <- "Sao Paulo"
     }
   })
   
